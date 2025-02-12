@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import com.jm.exam.service.TicketServ;
 import com.jm.exam.bean.dto.TicketReq;
+import com.jm.exam.bean.dto.PageableReq;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +45,7 @@ public class TicketRestController {
     }
 
     @PostMapping(value = "/listar", produces = "application/json")
-    public String listarTicket (@RequestBody TicketReq ticketReq) throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(ticketServ.crearTicket(ticketReq));
+    public String listarTicket (@RequestBody PageableReq pageableReq) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(ticketServ.listarTicket(pageableReq));
     }
 }

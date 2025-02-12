@@ -9,8 +9,14 @@ import com.jm.exam.bean.dto.TicketReq;
 import com.jm.exam.service.TicketServ;
 import lombok.RequiredArgsConstructor;
 import com.jm.exam.repository.TicketRep;
+import com.jm.exam.bean.dto.PageableReq;
 import com.jm.exam.bean.dto.GeneralResponse;
+import org.springframework.data.domain.Page;
+import com.jm.exam.util.TicketSpecification;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 @Slf4j
 @Service
@@ -73,7 +79,15 @@ public class TicketImpl implements TicketServ {
     }
 
     @Override
-    public GeneralResponse listarTicket(TicketReq ticketReq) {
-        return null;
+    public Page<Ticket> listarTicket(PageableReq pageableReq) {
+        Pageable pageable = PageRequest.of(pageableReq.getPagina(), pageableReq.getTamanio());
+
+        Specification<Ticket> spec = Specification.where(
+                TicketSpecification.idSpec(pageableReq.getTicketReq().getId()))
+                .and(TicketSpecification.usuarioSpec(pageableReq.getTicketReq().getUsuario())
+                        .and(TicketSpecification.fechaCreacionMinimaSpec(pageableReq.getFechaCreacionMinima()))
+                        .and(TicketSpecification.fechaCreacionMaximaSpec(pageableReq.getFechaCreacionMaxima())));
+
+        return ticketRep.findAll(spec, pageable);
     }
 }
